@@ -8,3 +8,9 @@ declare module '*.vue' {
   const component: DefineComponent<{}, {}, any>;
   export default component;
 }
+
+// Definition for correct import json files
+declare module '*.json' {
+  const value: any;
+  export default value;
+}
