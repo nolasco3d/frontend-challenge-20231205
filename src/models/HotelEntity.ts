@@ -29,7 +29,7 @@ export default class HotelEntity {
 
 export type AmenityType = {
   key: string;
-  value: string;
+  label: string;
 };
 
 export type AddressType = {

@@ -11,10 +11,11 @@ interface PlaceStoreState {
 interface HotelStoreState extends PlaceStoreState {
   rightDrawerOpen: boolean;
   hotelsList: HotelsListType[];
+  hotelSelected?: HotelEntity | null;
 }
 
 export type HotelsListType = {
-  placeId: string;
+  placeId: number;
   hotels: HotelEntity[];
 };
 
@@ -23,16 +24,28 @@ export const useHotelStore = defineStore('hotel', {
     rightDrawerOpen: false,
     hotelsList: [...Hotels],
     placesList: [...Places],
+    hotelSelected: null,
   }),
   getters: {
-    // doubleCount: (state) => state.counter * 2,
+    getHotelsByPlaceId: (state) => {
+      return (placeId: number): HotelEntity[] => {
+        const hotels: HotelEntity[] =
+          state.hotelsList.find((item) => item.placeId === placeId)?.hotels ??
+          [];
+
+        return hotels;
+      };
+    },
   },
   actions: {
     toggleRightDrawer(): void {
       this.rightDrawerOpen = !this.rightDrawerOpen;
     },
-    // increment() {
-    //   this.counter++;
-    // },
+    setSelectHotel(hotel: HotelEntity): void {
+      this.hotelSelected = hotel;
+    },
+    clearSelectedHotel(): void {
+      this.hotelSelected = null;
+    },
   },
 });
