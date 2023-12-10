@@ -8,25 +8,20 @@
 
     <q-card-section>
       <div class="row q-col-gutter-lg">
-        <!-- Input -->
+        <!-- INPUT SLOT -->
         <div class="col-12">
           <slot />
         </div>
 
-        <!-- Button -->
+        <!-- BUTTON ACTION SLOT -->
         <div class="col-12 flex justify-end">
-          <slot name="action">
-            <q-btn class="q-px-lg" unelevated rounded color="primary"
-              label="Buscar" @click="$emit('action')" />
-          </slot>
+          <slot name="action" />
         </div>
       </div>
     </q-card-section>
   </q-card>
 </template>
 
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <style scoped lang="scss"></style>

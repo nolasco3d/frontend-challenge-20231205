@@ -1,27 +1,30 @@
 <template>
   <q-page padding class="row">
-    <div class="container col-12 col-md-10 q-mx-auto">
+    <div class="container col-12 col-sm-11 col-md-10 q-mx-auto">
       <!-- SEARCH BY PLACE -->
       <div class="row">
         <div class="col-12">
-          <form-search @action="ui_store.toggleRightDrawer()">
-            <!-- INPUT -->
-            <q-select label-slot v-model="place" :options="hotel_store.placesList"
-              :option-label="getLabelInput"
-              :display-value="`${place ? `${place?.name}, ${place?.state?.shortname}` : ''}`">
+          <q-form ref="searchForm" @submit="handleSubmitForm">
+            <form-search>
+              <!-- INPUT -->
+              <q-select label-slot lazy-rules
+                :rules="[val => val || 'Selecione um destino']" v-model="place"
+                :options="hotel_store.placesList" :option-label="getLabelInput"
+                :display-value="`${place ? `${place?.name}, ${place?.state?.shortname}` : ''}`">
 
-              <!-- INPUT LABEL -->
-              <template #label>
-                Destino <span class="text-negative">*</span>
+                <!-- INPUT LABEL -->
+                <template #label>
+                  Destino <span class="text-negative">*</span>
+                </template>
+              </q-select>
+
+              <!-- ACTION -->
+              <template #action>
+                <q-btn class="q-px-xl" type="submit" unelevated rounded
+                  color="primary" :label="actionButtonLabel" />
               </template>
-            </q-select>
-
-            <!-- ACTION -->
-            <template #action>
-              <q-btn class="q-px-xl" unelevated rounded color="primary"
-                :label="actionButtonLabel" @click="message" />
-            </template>
-          </form-search>
+            </form-search>
+          </q-form>
         </div>
       </div>
 
@@ -62,86 +65,84 @@
         </div>
       </div>
 
+      <template
+        v-if="hotel_store.searchResults && hotel_store.searchResults?.length === 0">
+        <NoResultCard />
+      </template>
 
-      <!-- HOTELS LIST -->
-      <div class="row">
-        <template v-if="!listHotelsByPlace.length && !place">
-          Selecione um destino!
-        </template>
-
-        <template v-else-if="listHotelsByPlace.length && place">
-          <hotel-list-item
-            v-for="( hotel, item_idx ) in  listHotelsByPlace.slice(0, 5) "
-            :key="`${item_idx}-id`" :hotel="hotel"
+      <template
+        v-else-if="hotel_store.searchResults && hotel_store.searchResults?.length > 0">
+        <q-infinite-scroll class="" @load="scrollHandler" :offset="100">
+          <hotel-list-item v-for="hotel in  listHotelsByPlace "
+            :key="`hotel-card-${hotel.id}`" :hotel="hotel"
             @action="handleActionListItem(hotel)">
           </hotel-list-item>
-        </template>
 
-        <template v-else>
-          Nenhum hotel localizado..
-        </template>
+          <template #loading>
+            <div class="row justify-center items-center q-my-md">
+              <q-spinner-dots color="primary" size="40px" />
+            </div>
+          </template>
+        </q-infinite-scroll>
+      </template>
 
-      </div>
     </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { ref, computed } from 'vue';
 import FormSearch from 'components/Form/FormSearch.vue'
+import NoResultCard from 'src/components/NoResultCard.vue';
 import HotelListItem from 'src/components/HotelListItem.vue';
 import { useHotelStore } from 'src/stores/hotel-store';
 import { useUIStore } from 'src/stores/ui-store';
 import PlaceEntity from 'src/models/PlaceEntity';
 import HotelEntity from 'src/models/HotelEntity';
+import { FilterHoltelType, sortByStrategy } from 'components/utils/sortHotels'
 
-type FilterHoltelType = 'stars' | 'price'
-type FilterStrategyType<T> = Record<FilterHoltelType, (arr: T[]) => T[]>
 
 const hotel_store = useHotelStore()
 const ui_store = useUIStore()
 const place = ref<PlaceEntity | null>(null)
 const currentFilter = ref<FilterHoltelType>('price')
 const listHotelLimiter = ref(5)
-
-const actionButtonLabel = computed(() => place.value ? 'Alterar Busca' : 'Buscar')
-
-const sortByStrategy: FilterStrategyType<HotelEntity> = {
-  price: (arr) => arr.toSorted((a, b) => (a!.price as number) - (b!.price as number)),
-  stars: (arr) => arr.toSorted((a, b) => parseInt(b.stars as string) - parseInt(a.stars as string))
-}
+const searchForm = ref(null)
+const actionButtonLabel = computed(() => hotel_store.searchResults?.length ? 'Alterar Busca' : 'Buscar')
 
 const listHotelsByPlace = computed(() => {
-  if (!place.value) return []
-  const res = hotel_store.getHotelsByPlaceId(place.value.placeId as number)
-  console.log(res)
-  return sortByStrategy[currentFilter.value](res)
+  return sortByStrategy[currentFilter.value](hotel_store.searchResults ?? [])
+    .slice(0, listHotelLimiter.value)
 })
+
+
+function handleSubmitForm(): void {
+  if (!place.value) return
+  hotel_store.getHotelsByPlaceId(place.value.placeId as number)
+}
+
+function scrollHandler(index: number, done: any) {
+
+  // Usei setTimeout para simular uma requisição
+  setTimeout(() => {
+    console.log(listHotelLimiter.value, 'Limiter')
+    listHotelLimiter.value += 5
+    listHotelLimiter.value >= (hotel_store.searchResults ?? []).length
+      ? done(true)
+      : done()
+  }, 1000)
+
+}
 
 function handleActionListItem(hotel: HotelEntity): void {
   hotel_store.setSelectHotel(hotel)
   ui_store.toggleRightDrawer()
 }
 
-function message(): void {
-  alert('Hello!')
-  handleSubmitForm()
-}
-
-function handleSubmitForm(): void {
-  console.log('Update state with correct placeId');
-  console.log('Filter results');
-}
 
 function getLabelInput(option: PlaceEntity): string {
   return `${option.name}, ${option.state?.name}`
 }
-
-function searchForHotels(): void {
-  console.log('Called!')
-
-}
-
 
 </script>
 

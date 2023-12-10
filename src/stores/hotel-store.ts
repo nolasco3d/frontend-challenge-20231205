@@ -12,6 +12,7 @@ interface HotelStoreState extends PlaceStoreState {
   rightDrawerOpen: boolean;
   hotelsList: HotelsListType[];
   hotelSelected?: HotelEntity | null;
+  searchResults: HotelEntity[] | null;
 }
 
 export type HotelsListType = {
@@ -25,15 +26,16 @@ export const useHotelStore = defineStore('hotel', {
     hotelsList: [...Hotels],
     placesList: [...Places],
     hotelSelected: null,
+    searchResults: null,
   }),
   getters: {
     getHotelsByPlaceId: (state) => {
-      return (placeId: number): HotelEntity[] => {
+      return (placeId: number): void => {
         const hotels: HotelEntity[] =
           state.hotelsList.find((item) => item.placeId === placeId)?.hotels ??
           [];
 
-        return hotels;
+        state.searchResults = [...hotels];
       };
     },
   },
