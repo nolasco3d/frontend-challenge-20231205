@@ -1,12 +1,27 @@
-export enum MaterialIconsMap {
-  'WI_FI' = 'wifi',
-}
+export const IconsMap = {
+  WI_FI: 'wifi',
+  MEETING_ROOM: 'meeting_room',
+  RESTAURANT: 'restaurant',
+  LAUNDRY: 'local_laundry_service',
+  ROOM_SERVICE: 'room_service',
+  AIR_CONDITIONING: 'air',
+  SAFE: 'lock',
+  BREAKFAST: 'breakfast_dining',
+  PARKING: 'local_parking',
+  FITNESS_CENTER: 'fitness_center',
+  POOL: 'pool',
+  STEAM_ROOM: 'hot_tub',
+  PUB: 'sports_bar',
+  PETS: 'pets',
+};
 
-type IconsMapType = { [index: string]: string };
+export type IconsMapKeys = keyof typeof IconsMap;
+
+type IconsMapType = Record<IconsMapKeys, string>;
 
 interface Strategy {
   readonly iconsMap: IconsMapType;
-  translateIconName(name: keyof IconsMapType): string;
+  translateIconName(name: IconsMapKeys): string;
 }
 
 export class IconsLibrary {
@@ -20,30 +35,30 @@ export class IconsLibrary {
     this.strategy = strategy;
   }
 
-  getIcon(name: string) {
+  getIcon(name: IconsMapKeys) {
     return this.strategy.translateIconName(name);
   }
 }
 
 export class MaterialIconsStrategy implements Strategy {
-  iconsMap: IconsMapType = {
+  iconsMap = {
     WI_FI: 'wifi',
     MEETING_ROOM: 'meeting_room',
     RESTAURANT: 'restaurant',
     LAUNDRY: 'laundry',
-    ROOM_SERVICE: 'Serviço de quarto',
-    AIR_CONDITIONING: 'Ar condicionado',
-    SAFE: 'Cofre',
-    BREAKFAST: 'Café da manhã',
-    PARKING: 'Estacionamento',
-    FITNESS_CENTER: 'Academia',
-    POOL: 'Piscina',
-    STEAM_ROOM: 'Sauna',
-    PUB: 'Bar',
-    PETS: 'Aceita animais de estimação',
+    ROOM_SERVICE: 'room_service',
+    AIR_CONDITIONING: 'air',
+    SAFE: 'lock',
+    BREAKFAST: 'breakfast_dining',
+    PARKING: 'local_parking',
+    FITNESS_CENTER: 'fitness_center',
+    POOL: 'pool',
+    STEAM_ROOM: 'hot_tub',
+    PUB: 'sports_bar',
+    PETS: 'pets',
   };
 
-  translateIconName(name: string): string {
+  translateIconName(name: IconsMapKeys): string {
     if (name in this.iconsMap) {
       return this.iconsMap[name];
     }

@@ -27,22 +27,21 @@
     </div>
 
     <!-- FACILIDADES -->
-    <div class="row">
-      <div class="col-12 text-center">
+    <div class="row" v-if="props.hotel?.amenities">
+      <div class="col-12">
         <div class="text-h5">Facilidades do hotel</div>
         <q-separator class="q-my-md" />
 
-        <div class="row">
-          <span v-for="(amenity, idx_amen) in props.hotel?.amenities"
-            :key="`${idx_amen}-item`" class="col-4 text-left q-mb-md">
-            <q-icon size="1.6rem"
-              :name="String(amenity.key).toLocaleLowerCase()" />
-            {{ amenity.label }}
-          </span>
+        <div class="row q-gutter-md q-mb-lg">
+          <q-btn flat v-for="(amenity, idx_amen) in props.hotel?.amenities"
+            :key="`${idx_amen}-item`" class="">
+            <IconsLibrary :name="(amenity.key as IconsMapKeys)" />
+            <span>{{ amenity.label }}</span>
+          </q-btn>
         </div>
 
-        <q-btn no-caps label="Mostrar todas as facilidades" color="primary"
-          outline rounded />
+        <q-btn class="block q-mx-auto" no-caps
+          label="Mostrar todas as facilidades" color="primary" outline rounded />
 
         <q-separator class="q-my-md" />
       </div>
@@ -68,6 +67,7 @@ import HotelEntity from 'src/models/HotelEntity';
 import RatingStars from './RatingStars.vue';
 import IconsLibrary from './IconsLibrary.vue';
 import { computed, ref } from 'vue';
+import { IconsMapKeys } from './utils/iconsStrategy';
 
 interface HotelDetailsProps {
   hotel: HotelEntity | null
