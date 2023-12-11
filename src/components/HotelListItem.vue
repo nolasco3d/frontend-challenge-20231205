@@ -18,13 +18,14 @@
       <!-- Details -->
       <q-card-section class="col">
         <div class="text-h6">{{ props.hotel.name }}</div>
-        <div class="text-body1">{{ props.hotel.address?.city }}, {{
-          props.hotel.address?.district }}</div>
+        <div class="text-body1">{{ props.hotel.address.city }}, {{
+          props.hotel.address.district }}</div>
 
         <div class="flex items-center q-mt-md q-mb-sm">
-          <span class="q-mr-sm">{{ props.hotel.stars }}</span>
-          <q-rating v-model="stars" :max="stars" size="1.2em" color="yellow-14"
-            readonly />
+          <!-- <span class="q-mr-sm">{{ stars }}</span> -->
+          <RatingStars :stars="stars" />
+          <!-- <q-rating v-model="stars" :max="stars" size="1.2em" color="yellow-14"
+            readonly /> -->
         </div>
 
         <q-chip square color="grey"
@@ -55,6 +56,7 @@
 
 <script setup lang="ts">
 import HotelEntity from 'src/models/HotelEntity';
+import RatingStars from './RatingStars.vue';
 import { computed, ref } from 'vue';
 import { useQuasar } from 'quasar';
 

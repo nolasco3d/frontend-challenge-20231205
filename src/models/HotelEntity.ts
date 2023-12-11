@@ -1,29 +1,55 @@
 export default class HotelEntity {
-  id?: number;
-  favorite? = false;
-  name?: string;
-  description?: string;
-  stars?: string;
-  thumb?: string;
-  amenities?: AmenityType[];
-  hasBreakFast? = false;
+  id: number;
+  favorite = false;
+  name: string;
+  description: string;
+  stars: string;
+  thumb: string;
+  amenities: AmenityType[];
+  hasBreakFast = false;
   hasRefundableRoom? = false;
-  hasAgreement? = false;
-  nonRefundable?: null | unknown;
-  address?: AddressType;
-  images?: string[];
-  deals?: null | unknown;
-  roomQuantity?: number;
-  price?: number;
+  hasAgreement = false;
+  nonRefundable: null | unknown;
+  address: AddressType;
+  images: string[];
+  deals: null | unknown;
+  roomQuantity: number;
+  price: number;
 
-  constructor(this_class?: HotelEntity) {
-    if (this_class) {
-      Object.entries(this_class).forEach(([key, value]) => {
-        if (key in HotelEntity) {
-          this[key as keyof HotelEntity] = value;
-        }
-      });
-    }
+  constructor({
+    id,
+    deals,
+    description,
+    name,
+    price,
+    roomQuantity,
+    stars,
+    thumb,
+    address,
+    amenities,
+    favorite,
+    hasAgreement,
+    hasBreakFast,
+    hasRefundableRoom,
+    images,
+    nonRefundable,
+  }: HotelEntity) {
+    this.id = id;
+    this.favorite = favorite;
+    this.name = name;
+    this.description = description;
+    this.stars = stars;
+    this.thumb = thumb;
+    this.amenities = amenities;
+    this.hasBreakFast = hasBreakFast;
+    this.images = images;
+    this.hasAgreement = hasAgreement;
+    this.nonRefundable = nonRefundable;
+    this.hasRefundableRoom = hasRefundableRoom;
+    this.address = address;
+    this.deals = deals;
+    this.roomQuantity = roomQuantity;
+    this.price = price;
   }
 }
 

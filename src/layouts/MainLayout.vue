@@ -5,7 +5,7 @@
 
     <q-drawer v-model="ui_store.rightDrawerOpen" side="right" overlay
       behavior="mobile" elevated @hide="hotel_store.clearSelectedHotel()"
-      :width="Math.floor(screen_width * .8)">
+      :width="$q.screen.lt.sm ? screen_width * .85 : screen_width * .65">
       <!-- drawer content -->
       <hotel-details :hotel="hotel_store.hotelSelected" />
     </q-drawer>
@@ -24,8 +24,9 @@ import HotelDetails from 'src/components/HotelDetails.vue';
 import { useHotelStore } from 'src/stores/hotel-store';
 import { useUIStore } from 'src/stores/ui-store';
 import { onMounted, ref } from 'vue';
+import { useQuasar } from 'quasar';
 
-
+const $q = useQuasar();
 const ui_store = useUIStore();
 const hotel_store = useHotelStore();
 
