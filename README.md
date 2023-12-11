@@ -16,6 +16,6 @@ Para executar o Onfly - Booking execute o seguinte commando no terminal:
 ```
 
 Você também pode experimentar uma demonstração no link abaixo:
-[DEMONSTRAÇÃO](https://frontend-challenge-20231205-1m56-iblkdpr4w-nolasco3d.vercel.app/)
+[DEMONSTRAÇÃO](https://frontend-challenge-20231205-1m56.vercel.app/)
 
 > This is a challenge by [Coodesh](https://coodesh.com/)
